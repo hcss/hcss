@@ -1,0 +1,4 @@
+&layout layout
+
+&block body
+&import header
