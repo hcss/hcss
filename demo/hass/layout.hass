@@ -1,0 +1,14 @@
+html
+  head
+    &block head
+    link
+      &attr: "href=#"
+  body
+    &block body
+
+!html
+  font-size: 10px
+
+!*
+  margin: 0
+  padding: 0
