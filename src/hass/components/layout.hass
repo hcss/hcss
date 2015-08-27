@@ -1,8 +1,11 @@
 html
+  &attr: "lang=zh_CN"
   head
     &block head
     link
       &attr: "href=#"
+    title
+      &text: hcss demo
   body
     &block body
 
