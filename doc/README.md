@@ -121,7 +121,7 @@ header.header#header
 
 ```
 
-#### &extends 和 &import
+#### &extends 和 &include
 
 ```
 // index.hass

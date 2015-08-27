@@ -12,6 +12,7 @@ jadeDir = path.join(publicDir, 'demo/jade', 'index.jade')
 
 
 readFile = (hass_file, sass_file, jade_file) ->
+  isDirectory(hass_file)
   console.log 1 + sass_file
   fs.readFile hass_file, (err, data) ->
     if err
@@ -27,10 +28,10 @@ writeFile = (file, str) ->
     console.log('3' + arr)
 
     fs.appendFile file, arr, (err) ->
-        if err
-            console.log '4 写入文件fail' + err
-        else
-            console.log '4 写入文件ok'
+      if err
+          console.log '4 写入文件fail' + err
+      else
+          console.log '4 写入文件ok'
 
 
 compile2SassAndJade = (hass_file, sass_file, jade_file) ->
