@@ -1,0 +1,13 @@
+{
+  "name": "hcss",
+  "version": "0.1.0",
+  "devDependencies": {
+    "gulp": "~3.9.0",
+    "path": "~0.11.14",
+
+    "gulp-sass": "~2.0.4",
+    "gulp-jade": "~1.1.0",
+
+    "cirru-parser": "~0.10.7"
+  }
+}
