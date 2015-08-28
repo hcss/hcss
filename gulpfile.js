@@ -18,7 +18,7 @@ var htmlcssOutput = {
 }
 
 
-gulp.task('sass', function () {
+gulp.task('sass', function() {
   gulp.src(source.sassDir)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(htmlcssOutput.cssDir));
@@ -33,11 +33,11 @@ gulp.task('jade', function() {
 });
 
 
-gulp.task('sass:watch', function () {
+gulp.task('sass:watch', function() {
   gulp.watch(source.sassDir, ['sass']);
 });
 
-gulp.task('jade:watch', function () {
+gulp.task('jade:watch', function() {
   gulp.watch(source.jadeDir, ['jade']);
 });
 

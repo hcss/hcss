@@ -12,3 +12,8 @@ Hyper Cascading Stylesheet
 
  * [sass](http://sass-lang.com/)
  * [jade](http://jade-lang.com/)
+
+## 借鉴思想
+
+- 模块化
+- 缩进式写法
