@@ -64,10 +64,9 @@
   };
 
   _preSpaceCount = function(str) {
-    var col, i, len, results, strObj, val;
+    var col, i, len, strObj, val;
     col = 0;
     strObj = str.split(' ');
-    results = [];
     for (i = 0, len = strObj.length; i < len; i++) {
       val = strObj[i];
       if (val === '') {
@@ -77,7 +76,7 @@
         break;
       }
     }
-    return results;
+    return col;
   };
 
   _indentEnd = function(xs, state, code, style) {
@@ -102,6 +101,9 @@
 
   _appendHass = function(xs, state, code, style) {
     var char;
+    log("=======hass state=========");
+    log(state);
+    log("-----------hass state end----------");
     char = code[0];
     state = _appendState('hass', state, char);
     if (xs.push(state)) {
@@ -111,7 +113,13 @@
 
   _appendSass = function(xs, state, code, style) {
     var char;
+    log("sass=======state=========");
+    log(state);
+    log("----------sass state end--------");
     char = code[0];
+    if (_.str(char).startsWith('!')) {
+      char = char.replace('!', '');
+    }
     state = _appendState('sass', state, char);
     if (xs.push(state)) {
       return [xs, state, code.slice(1), style];
@@ -120,6 +128,9 @@
 
   _appendJade = function(xs, state, code, style) {
     var char, str, text;
+    log("jade=======state=========");
+    log(state);
+    log("----------jade state end--------");
     char = code[0];
     str = _.str.clean(char).split(' ')[0];
     switch (str) {
@@ -151,6 +162,7 @@
 
   _indentParser = function(xs, state, code, style) {
     var args, char;
+    style = 'indent';
     char = code[0];
     args = [xs, state, code, style];
     if (isHcssType(char)) {
@@ -172,7 +184,6 @@
 
   parse = function(xs, state, code, style) {
     var args, end;
-    log(xs);
     args = [xs, state, code, style];
     end = code.length === 0;
     switch (style) {

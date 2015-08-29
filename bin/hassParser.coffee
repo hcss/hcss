@@ -114,18 +114,18 @@ _appendJade = (xs, state, code, style)->
   log "----------jade state end--------"
   char = code[0]
 
-  str = _.str.clean(char).split(' ')[0]
+  str = _.str.clean(char).split(' ')[0].replace(':', '')
   switch str
     when '&extends' then char = char.replace('&', '')
     when '&block' then  char = char.replace('&', '')
     when '&include' then  char = char.replace('&', '')
-    when '&text:'
-      text = _.str.trim(char).slice('&text:'.length)
+    when '&text'
+      text = _.str.trim(char).slice('&text'.length)
       log "text: "+text
       # 插入到其父对象中
       return [xs, state, code[1..], style]
-    when '&attr:'
-      text = _.str.trim(char).slice('&text:'.length)
+    when '&attr'
+      text = _.str.trim(char).slice('&attr'.length)
       log "attr: "+text
       # 插入到其父对象中
       return [xs, state, code[1..], style]
