@@ -17,3 +17,7 @@ Hyper Cascading Stylesheet
 
 - 模块化
 - 缩进式写法
+
+## Run
+
+`coffee bin/hcss.coffee`
