@@ -10,9 +10,9 @@ _ = require 'underscore'
 {parser} = require './hassParser.coffee'
 
 publicDir = path.join(__dirname, '..', '')
-hassDir = path.join(publicDir, 'demo/hass', 'layout.hass')
-sassDir = path.join(publicDir, 'demo/sass', 'header.sass')
-jadeDir = path.join(publicDir, 'demo/jade', 'header.jade')
+hassDir = path.join(publicDir, 'demo/hass', 'test.hass')
+sassDir = path.join(publicDir, 'demo/sass', 'test.sass')
+jadeDir = path.join(publicDir, 'demo/jade', 'test.jade')
 
 
 log = (a)->
@@ -33,7 +33,8 @@ readFileSync = (hass_file)->
     else
       str = iconv.decode(data, 'utf-8')
       str = str.split('\n')
-      log parser(str, hass_file)
+      readedObj = parser(str, hass_file)[0]
+      log readedObj
 ###
 # 解析文本
 #

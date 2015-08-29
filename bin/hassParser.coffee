@@ -23,9 +23,7 @@ exports.parser = (code, filename, style)->
   ###
   while code.length > 0
     [xs, state, code, style] = parse(xs, state, code, style)
-  res = parse(xs, state, code, style)
-  res
-
+  [xs, state, code, style]
 # 缩进解析
 exports.indentParser = (code, filename)->
   exports.parser(code, filename, 'indent')
@@ -35,7 +33,7 @@ exports.braceParser = (code, filename)->
   exports.parser(code, filename, 'brace')
 
 # 判断解析的语法类型
-isHcssType = (char)->
+isHassType = (char)->
   # 如果不存在 [&!:]
   reg = /[&!:]/g
   !reg.test(char)
@@ -76,13 +74,13 @@ _elseParser = (xs, state, code, style)->
 
 # 解析一行 为 state 并写入 xs
 _appendState = (xs, state, code, style, str)->
-  state.row += 1
-  state.text = str
-  state.col = _preSpaceCount(str)
-
-  # log state
-  # log xs
-  if xs.push state
+  sta = {}
+  sta.type = state.type
+  sta.row = state.row += 1
+  sta.text = str
+  sta.col = _preSpaceCount(str)
+  sta.path = state.path
+  if xs.push sta
     [xs, state, code[1..], style]
 
 _appendHass = (xs, state, code, style)->
@@ -100,26 +98,38 @@ _appendSass = (xs, state, code, style)->
 _appendJade = (xs, state, code, style)->
   state.type = 'jade'
   char = code[0]
+  # 兼容 &text : 嘎嘎:
+  str = _.str.clean(char).split(' ')[0]
+  if _.str.include(char, ':')
+    textStr = char.split(':')[0]
+    switch _.str.clean(textStr)
+      when '&text'
+        spaceNum = _preSpaceCount(char)
+        text = char.slice('textStr'.length + 1)
 
-  str = _.str.clean(char).split(' ')[0].replace(':', '')
-  switch str
+        _.each xs.reverse(), (val, key)->
+          if spaceNum > val.col
+            xsText = xs[key].text
+            xs[key].text = xsText + ' ' + text
+            return [xs, state, code[1..], style]
+      when '&attr'
+        spaceNum = _preSpaceCount(char)
+        text = char.slice('textStr'.length + 1)
+
+        _.each xs.reverse(), (val, key)->
+          if spaceNum > val.col
+            xsText = xs[key].text
+            strObj = _.str.clean(xsText).split(' ')
+            strObj[0] += '('+text+')'
+            xs[key].text = _.reduce strObj, (memo, num)->
+              return memo + ' ' + num
+            return [xs, state, code[1..], style]
+  else switch str
     when '&extends' then char = char.replace('&', '')
     when '&block' then  char = char.replace('&', '')
     when '&include' then  char = char.replace('&', '')
-    when '&text'
-      text = _.str.trim(char).slice('&text'.length)
-      log "text: "+text
-      # 插入到其父对象中
-      return [xs, state, code[1..], style]
-      break
-    when '&attr'
-      text = _.str.trim(char).slice('&attr'.length)
-      log "attr: "+text
-      # 插入到其父对象中
-      return [xs, state, code[1..], style]
-      break
-    else  throw error
 
+    else  throw error
   _appendState(xs, state, code, style, char)
 
 
@@ -129,7 +139,7 @@ _indentParser = (xs, state, code, style)->
 
   char = code[0]
   args = [xs, state, code, style]
-  if isHcssType(char)
+  if isHassType(char)
     _appendHass args...
   else if isJadeType(char)
     _appendJade args...
@@ -137,7 +147,7 @@ _indentParser = (xs, state, code, style)->
     _appendSass args...
   else
     _elseParser args...
-  [xs, state, code[1..], style]
+  # [xs, state, code[1..], style]
 
 _braceParser = (xs, state, code, style)->
   style = 'brace'
