@@ -37,7 +37,8 @@ exports.braceParser = (code, filename)->
 regexs =
   stepOne: /[&!:]/g
   stepTwo: /^!/
-  stepThree: /
+  stepThree: //
+  stepFour: //
 
 # 解析完
 _indentEnd = (xs, state, code, style)->
@@ -92,10 +93,23 @@ parse = (xs, state, code, style)->
       else if !regexs.stepOne.test(char)
         # type=hass
         _appendHass args...
-      # 如果开头有 [!]
-      else if 
+      # 如果开头有 [!] 
       # 如果该行没有 ['"] 有 [:]
+      else if regexs.stepTwo.test(char)
+        _appendSass args...
       # 如果该行开头有 &
+      else if regexs.stepThree.test(char)
+        switch str:
+          case '&extends':
+            break
+          case '&block':
+            break
+          case '&include':
+            break
+          case '&text':
+            break
+          case '&attr':
+            break
       #    如果是 extends block include text attr 
       else
         _elseParser args...
