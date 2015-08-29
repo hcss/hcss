@@ -84,6 +84,9 @@ _appendState = (type, state, str)->
   state
 
 _appendHass = (xs, state, code, style)->
+  log "=======hass state========="
+  log state
+  log "-----------hass state end----------"
   char = code[0]
   state = _appendState('hass', state, char)
 
@@ -93,8 +96,12 @@ _appendHass = (xs, state, code, style)->
     [xs, state, code[1..], style]
 
 _appendSass = (xs, state, code, style)->
+  log "sass=======state========="
+  log state
+  log "----------sass state end--------"
   char = code[0]
-
+  if _.str(char).startsWith('!')
+    char = char.replace('!', '')
   state = _appendState('sass', state, char)
 
   if xs.push state
@@ -102,6 +109,9 @@ _appendSass = (xs, state, code, style)->
     [xs, state, code[1..], style]
 
 _appendJade = (xs, state, code, style)->
+  log "jade=======state========="
+  log state
+  log "----------jade state end--------"
   char = code[0]
 
   str = _.str.clean(char).split(' ')[0]
@@ -130,6 +140,8 @@ _appendJade = (xs, state, code, style)->
 
 
 _indentParser = (xs, state, code, style)->
+  style = 'indent'
+
   char = code[0]
   args = [xs, state, code, style]
   if isHcssType(char)
@@ -150,7 +162,6 @@ _braceParser = (xs, state, code, style)->
 
 # 解析流程
 parse = (xs, state, code, style)->
-  log xs
   args = [xs, state, code, style]
   end = code.length is 0
 
