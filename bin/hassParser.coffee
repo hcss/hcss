@@ -61,6 +61,7 @@ _preSpaceCount = (str)->
       continue
     else
       break
+  col
 
 # 解析完
 _indentEnd = (xs, state, code, style)->
