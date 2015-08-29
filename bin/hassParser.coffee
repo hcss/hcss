@@ -79,7 +79,7 @@ _appendState = (type, state, str)->
   state.type = type
   state.row += 1
   state.text = str
-  state.col += _preSpaceCount(str)
+  state.col = _preSpaceCount(str)
 
   state
 
