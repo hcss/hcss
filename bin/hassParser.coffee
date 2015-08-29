@@ -6,33 +6,58 @@ log = (a)->
 exports.parser = (code, filename, style)->
   style = style || 'indent'
   state =
-    type: 'hass', # 文本类型: jade sass both
-    row: 1, # 第几行
-    col: 1, # 第几列
+    type: 'hass', # 解析成文本的类型: jade sass hass(both jade and sass)
+    row: 0, # 第几行
+    col: 0, # 前面有几个(空格)
     # level: 1, # 嵌套
     text: '', # 一行的文本(解析后的)
     path: filename # 读取的文件
   xs = []
+  ###
+  xs 储存解析后的 数组[]
+  state 每行解析的结果
+  code 传入的解析数据
+  style 书写方式 缩进 或者 大括号
+  ###
   while code.length > 0
+    log xs
     [xs, state, code, style] = parse(xs, state, code, style)
   res = parse(xs, state, code, style)
+  res
 
-
+# 缩进解析
 exports.indentParser = (code, filename)->
   exports.parser(code, filename, 'indent')
 
+# 大括号解析
 exports.braceParser = (code, filename)->
   exports.parser(code, filename, 'brace')
 
+# 解析匹配的正则
 regexs =
   stepOne: /[&!:]/g
 
+# 解析完
 _indentEnd = (xs, state, code, style)->
   log "End in indent parse ..."
 
 _braceEnd = (xs, state, code, style)->
   log "End in brace parse ..."
 
+# 跳过不能解析的行
+_elseParser = (xs, state, code, style)->
+  [xs, state, code[1..], style]
+
+_indentParser = (xs, state, code, style)->
+
+  [xs, state, code[1..], style]
+
+_braceParser = (xs, state, code, style)->
+  style = 'brace'
+
+  [xs, state, code[1..], style]
+
+# 解析一行 为 state 并写入 xs
 _appendHass = (xs, state, code, style)->
   state.type = 'hacc'
   state.row += 1
@@ -45,21 +70,14 @@ _appendHass = (xs, state, code, style)->
       continue
     else
       break
-  # hassTools.appendItem(xs, state)
-  log xs
-  xs.push state
+  # a = hassTools.appendItem(xs, state)
 
-  [xs, state, code[1..], style]
+  # bug 有问题 xs 插入的数据，不是期望的效果
+  if xs.push state
+  # log xs
+    [xs, state, code[1..], style]
 
-_indentParser = (xs, state, code, style)->
-
-  [xs, state, code[1..], style]
-
-_braceParser = (xs, state, code, style)->
-  style = 'brace'
-
-  [xs, state, code[1..], style]
-
+# 解析流程
 parse = (xs, state, code, style)->
   args = [xs, state, code, style]
   end = code.length is 0
@@ -70,13 +88,14 @@ parse = (xs, state, code, style)->
       if end then _indentEnd args...
       # 如果不存在 [&!:]
       else if !regexs.stepOne.test(char)
-        console.log code.length
         # type=hass
         _appendHass args...
-      else _indentParser args...
+      else
+        _elseParser args...
     when 'brace'
       if end then _braceEnd args...
-      else _braceParser args...
+      else
+        _braceParser args...
       return
 
 ###

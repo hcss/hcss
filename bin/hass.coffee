@@ -7,7 +7,7 @@ iconv = require 'iconv-lite'
 
 _ = require 'underscore'
 
-hassParser = require './hassParser.coffee'
+{parser} = require './hassParser.coffee'
 
 publicDir = path.join(__dirname, '..', '')
 hassDir = path.join(publicDir, 'demo/hass', 'layout.hass')
@@ -35,7 +35,7 @@ readFileSync = (hass_file)->
     else
       str = iconv.decode(data, 'utf-8')
       str = str.split('\n')
-      hassParser.parser(str, hass_file)
+      log parser(str, hass_file)
 ###
 # 解析文本
 #
