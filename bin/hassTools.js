@@ -3,7 +3,8 @@
   var appendItem;
 
   exports.appendItem = appendItem = function(xs, state) {
-    return xs.push(state);
+    xs.push(state);
+    return xs;
   };
 
 }).call(this);
