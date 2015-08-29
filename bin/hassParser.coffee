@@ -4,7 +4,7 @@ _.str = require 'underscore.string'
 hassTools = require './hassTools.coffee'
 log = (a)->
   console.log a
-
+xs = []
 exports.parser = (code, filename, style)->
   style = style || 'indent'
   state =
@@ -75,43 +75,30 @@ _elseParser = (xs, state, code, style)->
   [xs, state, code[1..], style]
 
 # 解析一行 为 state 并写入 xs
-_appendState = (type, state, str)->
-  state.type = type
+_appendState = (xs, state, code, style, str)->
   state.row += 1
   state.text = str
   state.col = _preSpaceCount(str)
 
-  state
-
-_appendHass = (xs, state, code, style)->
-  log "=======hass state========="
-  log state
-  log "-----------hass state end----------"
-  char = code[0]
-  state = _appendState('hass', state, char)
-
-  # bug 有问题 xs 插入的数据，不是期望的效果
-  if xs.push state
+  # log state
   # log xs
+  if xs.push state
     [xs, state, code[1..], style]
 
+_appendHass = (xs, state, code, style)->
+  state.type = 'hass'
+  char = code[0]
+  _appendState(xs, state, code, style, char)
+
 _appendSass = (xs, state, code, style)->
-  log "sass=======state========="
-  log state
-  log "----------sass state end--------"
+  state.type = 'sass'
   char = code[0]
   if _.str(char).startsWith('!')
     char = char.replace('!', '')
-  state = _appendState('sass', state, char)
-
-  if xs.push state
-  # log xs
-    [xs, state, code[1..], style]
+  _appendState(xs, state, code, style, char)
 
 _appendJade = (xs, state, code, style)->
-  log "jade=======state========="
-  log state
-  log "----------jade state end--------"
+  state.type = 'jade'
   char = code[0]
 
   str = _.str.clean(char).split(' ')[0].replace(':', '')
@@ -124,18 +111,16 @@ _appendJade = (xs, state, code, style)->
       log "text: "+text
       # 插入到其父对象中
       return [xs, state, code[1..], style]
+      break
     when '&attr'
       text = _.str.trim(char).slice('&attr'.length)
       log "attr: "+text
       # 插入到其父对象中
       return [xs, state, code[1..], style]
+      break
     else  throw error
 
-  state = _appendState('jade', state, char)
-
-  if xs.push state
-  # log xs
-    [xs, state, code[1..], style]
+  _appendState(xs, state, code, style, char)
 
 
 
