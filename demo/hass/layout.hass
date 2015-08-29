@@ -2,9 +2,10 @@ html
   head
     &block head
     link
-      &attr: "href=#"
+      &attr: href="#", type="text/css"
   body
     &block body
+    &text: 嘎嘎
 
 !html
   font-size: 10px

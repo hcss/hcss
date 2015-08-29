@@ -14,8 +14,6 @@ hassDir = path.join(publicDir, 'demo/hass', 'layout.hass')
 sassDir = path.join(publicDir, 'demo/sass', 'header.sass')
 jadeDir = path.join(publicDir, 'demo/jade', 'header.jade')
 
-stepOne = /[&!:]/g
-
 
 log = (a)->
   console.log a
