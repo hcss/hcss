@@ -106,11 +106,14 @@ _appendJade = (xs, state, code, style)->
       when '&text'
         spaceNum = _preSpaceCount(char)
         text = char.slice('textStr'.length + 1)
-
+        log "======"
+        log xs
         _.each xs.reverse(), (val, key)->
           if spaceNum > val.col
             xsText = xs[key].text
             xs[key].text = xsText + ' ' + text
+            log "---------======"
+            log xs
             return [xs, state, code[1..], style]
       when '&attr'
         spaceNum = _preSpaceCount(char)
