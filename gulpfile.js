@@ -6,19 +6,25 @@ var sass = require('gulp-sass');
 var jade = require('gulp-jade');
 
 
-var jadesassDir = './src/build',
-  htmlcssDir = './src/build';
-var source = {
+var jadesassDir = './demo',
+  htmlcssDir = './demo';
+
+var sourceDemo = {
   sassDir: path.join(jadesassDir, 'jade-sass/sass/**/*.sass'),
   jadeDir: path.join(jadesassDir, 'jade-sass/jade/**/*.jade')
 }
+var source = {
+  sassDir: path.join(jadesassDir, 'sass/*.sass'),
+  jadeDir: path.join(jadesassDir, 'jade/*.jade')
+}
+
 var htmlcssOutput = {
   cssDir: path.join(htmlcssDir, 'html-css/css'),
   htmlDir: path.join(htmlcssDir, 'html-css/html')
 }
 
 
-gulp.task('sass', function () {
+gulp.task('sass', function() {
   gulp.src(source.sassDir)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(htmlcssOutput.cssDir));
@@ -33,11 +39,11 @@ gulp.task('jade', function() {
 });
 
 
-gulp.task('sass:watch', function () {
+gulp.task('sass:watch', function() {
   gulp.watch(source.sassDir, ['sass']);
 });
 
-gulp.task('jade:watch', function () {
+gulp.task('jade:watch', function() {
   gulp.watch(source.jadeDir, ['jade']);
 });
 

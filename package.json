@@ -8,6 +8,11 @@
     "gulp-sass": "~2.0.4",
     "gulp-jade": "~1.1.0",
 
-    "cirru-parser": "~0.10.7"
+    "iconv-lite": "~0.4.11",
+    "cirru-parser": "^0.10.6"
+  },
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "underscore.string": "^3.2.0"
   }
 }
