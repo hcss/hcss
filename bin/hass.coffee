@@ -34,15 +34,23 @@ readFile = (hass_file, sass_file, jade_file)->
       str = iconv.decode(data, 'utf-8')
       str = str.split('\n')
       readedObj = parser(str, hass_file)[0]
+      log readedObj
+      parseredText = {
+        jade: '',
+        sass: ''
+      }
       _.each readedObj, (val, index)->
         switch val.type
           when 'hass'
-            writeFile(sass_file, val.text)
-            writeFile(jade_file, val.text)
+            parseredText.jade += val.text + '\n'
+            parseredText.sass += val.text + '\n'
           when 'jade'
-            writeFile(jade_file, val.text)
+            parseredText.jade += val.text + '\n'
           when 'sass'
-            writeFile(sass_file, val.text)
+            parseredText.sass += val.text + '\n'
+      parseredText.jade = 'doctype html\n' + parseredText.jade
+      writeFile(sass_file, parseredText.sass)
+      writeFile(jade_file, parseredText.jade)
 ###
 # 解析文本
 #

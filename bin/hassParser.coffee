@@ -2,9 +2,10 @@ _ = require 'underscore'
 _.str = require 'underscore.string'
 
 hassTools = require './hassTools.coffee'
+
 log = (a)->
   console.log a
-xs = []
+
 exports.parser = (code, filename, style)->
   style = style || 'indent'
   state =
@@ -50,13 +51,14 @@ isSassType = (char)->
   return _.str(str).startsWith('!') || _.str.include(str, ':')
 
 _reverse = (arr) ->
+  reverserArr = arr
   i = 0
-  while i < arr.length / 2
-    temp = arr[i]
-    arr[i] = arr[arr.length - i - 1]
-    arr[arr.length - i - 1] = temp
+  while i < reverserArr.length / 2
+    temp = reverserArr[i]
+    reverserArr[i] = reverserArr[reverserArr.length - i - 1]
+    reverserArr[reverserArr.length - i - 1] = temp
     i++
-  arr
+  reverserArr
 
 # 解析行前空格（还没有考虑 Tab ）
 _preSpaceCount = (str)->
@@ -114,32 +116,33 @@ _appendJade = (xs, state, code, style)->
     state.type = 'text&attr'
 
     textStr = char.split(':')[0]
+    # col 大小
+    spaceNum = _preSpaceCount(char)
+    # 截取文本
+    text = char.slice(textStr.length + 1)
+    # 反转数据 插入 xs
+    xsReverse = _reverse(xs)
+
+    fatherState = _.find xsReverse, (val)->
+      return spaceNum > val.col
+    fatherIndex = _.indexOf(xsReverse, fatherState)
+
+    xsText = xsReverse[fatherIndex].text
 
     switch _.str.clean(textStr)
       when '&text'
-        # col 大小
-        spaceNum = _preSpaceCount(char)
-        # 截取文本
-        text = char.slice('textStr'.length + 1)
-        log text
-        # _.each xs.reverse(), (val, key)->
-        #   # 添加到父类
-        #   if spaceNum > val.col
-        #     xsText = xs[key].text
-        #     xs[key].text = xsText + ' ' + text
-        [xs.reverse(), state, code[1..], style]
+        # jade 写入 father
+        xsReverse[fatherIndex].text = xsText + ' ' + text
+        [_reverse(xsReverse), state, code[1..], style, text]
+
       when '&attr'
-        spaceNum = _preSpaceCount(char)
-        text = char.slice('textStr'.length + 1)
-        log text
-        # _.each xs.reverse(), (val, key)->
-        #   if spaceNum > val.col
-        #     xsText = xs[key].text
-        #     strObj = _.str.clean(xsText).split(' ')
-        #     strObj[0] += '('+text+')'
-        #     xs[key].text = _.reduce strObj, (memo, num)->
-        #       return memo + ' ' + num
-        _appendState(xs, state, code, style, text)
+        # jade 写入 father
+        log xsText
+        strObj = _.str.clean(xsText).split(' ')
+        strObj[0] = xsText.split(strObj[0])[0] + strObj[0] + '('+text+')'
+        xsReverse[fatherIndex].text = _.reduce strObj, (memo, num)->
+          return memo + ' ' + num
+        [_reverse(xsReverse), state, code, style, text]
 
   else switch str
     when '&extends' then char = char.replace('&', '')
