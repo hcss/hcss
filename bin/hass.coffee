@@ -10,9 +10,9 @@ _ = require 'underscore'
 {parser} = require './hassParser.coffee'
 
 publicDir = path.join(__dirname, '..', '')
-hassDir = path.join(publicDir, 'demo/hass', 'test.hass')
-sassDir = path.join(publicDir, 'demo/sass', 'test.sass')
-jadeDir = path.join(publicDir, 'demo/jade', 'test.jade')
+hassDir = path.join(publicDir, 'demo/hass', 'layout.hass')
+sassDir = path.join(publicDir, 'demo/sass', 'layout.sass')
+jadeDir = path.join(publicDir, 'demo/jade', 'layout.jade')
 
 
 log = (a)->
@@ -24,9 +24,9 @@ deleteFile = (files)->
       if exists
         fs.unlink val, ()->
 
-readFileSync = (hass_file)->
+readFile = (hass_file, sass_file, jade_file)->
   readedObj = []
-  # deleteFile([sass_file, jade_file])
+  deleteFile([sass_file, jade_file])
   fs.readFile hass_file, (err, data)->
     if err
       log '2 读取文件fail' + err
@@ -34,7 +34,15 @@ readFileSync = (hass_file)->
       str = iconv.decode(data, 'utf-8')
       str = str.split('\n')
       readedObj = parser(str, hass_file)[0]
-      log readedObj
+      _.each readedObj, (val, index)->
+        switch val.type
+          when 'hass'
+            writeFile(sass_file, val.text)
+            writeFile(jade_file, val.text)
+          when 'jade'
+            writeFile(jade_file, val.text)
+          when 'sass'
+            writeFile(sass_file, val.text)
 ###
 # 解析文本
 #
@@ -45,7 +53,7 @@ simplifiedTree = pare str, hass_file
 ###
 
 
-writeFileSync = (file, str)->
+writeFile = (file, str)->
     arr = iconv.encode(str, 'utf-8')
 
     fs.appendFile file, arr+'\n', (err)->
@@ -57,7 +65,7 @@ writeFileSync = (file, str)->
 
 
 compile2SassAndJade = (hass_file, sass_file, jade_file) ->
-  readFileSync(hass_file, sass_file, jade_file)
+  readFile(hass_file, sass_file, jade_file)
 
 log '1 compile' + hassDir + ' once...'
 compile2SassAndJade(hassDir, sassDir, jadeDir)

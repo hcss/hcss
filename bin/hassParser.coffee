@@ -49,6 +49,15 @@ isSassType = (char)->
   str = _.str.trim(char)
   return _.str(str).startsWith('!') || _.str.include(str, ':')
 
+_reverse = (arr) ->
+  i = 0
+  while i < arr.length / 2
+    temp = arr[i]
+    arr[i] = arr[arr.length - i - 1]
+    arr[arr.length - i - 1] = temp
+    i++
+  arr
+
 # 解析行前空格（还没有考虑 Tab ）
 _preSpaceCount = (str)->
   col = 0
@@ -101,32 +110,37 @@ _appendJade = (xs, state, code, style)->
   # 兼容 &text : 嘎嘎:
   str = _.str.clean(char).split(' ')[0]
   if _.str.include(char, ':')
+    # bug: text 和 attr 依旧在 xs 中，先用 state.type 忽略
+    state.type = 'text&attr'
+
     textStr = char.split(':')[0]
+
     switch _.str.clean(textStr)
       when '&text'
+        # col 大小
         spaceNum = _preSpaceCount(char)
+        # 截取文本
         text = char.slice('textStr'.length + 1)
-        log "======"
-        log xs
-        _.each xs.reverse(), (val, key)->
-          if spaceNum > val.col
-            xsText = xs[key].text
-            xs[key].text = xsText + ' ' + text
-            log "---------======"
-            log xs
-            return [xs, state, code[1..], style]
+        log text
+        # _.each xs.reverse(), (val, key)->
+        #   # 添加到父类
+        #   if spaceNum > val.col
+        #     xsText = xs[key].text
+        #     xs[key].text = xsText + ' ' + text
+        [xs.reverse(), state, code[1..], style]
       when '&attr'
         spaceNum = _preSpaceCount(char)
         text = char.slice('textStr'.length + 1)
+        log text
+        # _.each xs.reverse(), (val, key)->
+        #   if spaceNum > val.col
+        #     xsText = xs[key].text
+        #     strObj = _.str.clean(xsText).split(' ')
+        #     strObj[0] += '('+text+')'
+        #     xs[key].text = _.reduce strObj, (memo, num)->
+        #       return memo + ' ' + num
+        _appendState(xs, state, code, style, text)
 
-        _.each xs.reverse(), (val, key)->
-          if spaceNum > val.col
-            xsText = xs[key].text
-            strObj = _.str.clean(xsText).split(' ')
-            strObj[0] += '('+text+')'
-            xs[key].text = _.reduce strObj, (memo, num)->
-              return memo + ' ' + num
-            return [xs, state, code[1..], style]
   else switch str
     when '&extends' then char = char.replace('&', '')
     when '&block' then  char = char.replace('&', '')
