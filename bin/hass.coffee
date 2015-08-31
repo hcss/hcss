@@ -7,7 +7,7 @@ iconv = require 'iconv-lite'
 
 _ = require 'underscore'
 
-{parser} = require './hassParser.coffee'
+parser = require './hassParser.coffee'
 
 publicDir = path.join(__dirname, '..', '')
 hassDir = path.join(publicDir, 'demo/hass', 'layout.hass')
@@ -18,23 +18,23 @@ jadeDir = path.join(publicDir, 'demo/jade', 'layout.jade')
 log = (a)->
   console.log a
 
-deleteFile = (files)->
+_deleteFile = (files)->
   _.each files, (val)->
     fs.exists val, (exists)->
       if exists
         fs.unlink val, ()->
 
-readFile = (hass_file, sass_file, jade_file)->
+_readFile = (hass_file, sass_file, jade_file)->
   readedObj = []
-  deleteFile([sass_file, jade_file])
+  _deleteFile([sass_file, jade_file])
   fs.readFile hass_file, (err, data)->
     if err
       log '2 读取文件fail' + err
     else
       str = iconv.decode(data, 'utf-8')
       str = str.split('\n')
-      readedObj = parser(str, hass_file)[0]
-      log readedObj
+      readedObj = parser.parser(str, hass_file)[0]
+
       parseredText = {
         jade: '',
         sass: ''
@@ -49,31 +49,22 @@ readFile = (hass_file, sass_file, jade_file)->
           when 'sass'
             parseredText.sass += val.text + '\n'
       parseredText.jade = 'doctype html\n' + parseredText.jade
-      writeFile(sass_file, parseredText.sass)
-      writeFile(jade_file, parseredText.jade)
-###
-# 解析文本
-#
-syntaxTree = parse str, hass_file
-simplifiedTree = pare str, hass_file
+      _writeFile(sass_file, parseredText.sass, 'sass')
+      _writeFile(jade_file, parseredText.jade, 'jade')
 
-# writeFile(sass_file, str)
-###
-
-
-writeFile = (file, str)->
+_writeFile = (file, str, type)->
     arr = iconv.encode(str, 'utf-8')
 
     fs.appendFile file, arr+'\n', (err)->
     # fs.writeFile file, arr, (err)->
       if err
-          log '4 写入文件fail' + err
+          log '4.' + type + '写入文件fail' + err
       else
-          log '4 写入文件ok'
+          log '4.' + type + '写入文件ok'
 
 
 compile2SassAndJade = (hass_file, sass_file, jade_file) ->
-  readFile(hass_file, sass_file, jade_file)
+  _readFile(hass_file, sass_file, jade_file)
 
 log '1 compile' + hassDir + ' once...'
 compile2SassAndJade(hassDir, sassDir, jadeDir)

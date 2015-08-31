@@ -6,12 +6,18 @@ var sass = require('gulp-sass');
 var jade = require('gulp-jade');
 
 
-var jadesassDir = './src/build',
-  htmlcssDir = './src/build';
-var source = {
+var jadesassDir = './demo',
+  htmlcssDir = './demo';
+
+var sourceDemo = {
   sassDir: path.join(jadesassDir, 'jade-sass/sass/**/*.sass'),
   jadeDir: path.join(jadesassDir, 'jade-sass/jade/**/*.jade')
 }
+var source = {
+  sassDir: path.join(jadesassDir, 'sass/*.sass'),
+  jadeDir: path.join(jadesassDir, 'jade/*.jade')
+}
+
 var htmlcssOutput = {
   cssDir: path.join(htmlcssDir, 'html-css/css'),
   htmlDir: path.join(htmlcssDir, 'html-css/html')

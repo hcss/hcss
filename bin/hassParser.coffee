@@ -1,12 +1,10 @@
 _ = require 'underscore'
 _.str = require 'underscore.string'
 
-hassTools = require './hassTools.coffee'
-
 log = (a)->
   console.log a
 
-exports.parser = (code, filename, style)->
+parser = (code, filename, style)->
   style = style || 'indent'
   state =
     type: 'hass', # 解析成文本的类型: jade sass hass(both jade and sass)
@@ -25,12 +23,13 @@ exports.parser = (code, filename, style)->
   while code.length > 0
     [xs, state, code, style] = parse(xs, state, code, style)
   [xs, state, code, style]
+
 # 缩进解析
-exports.indentParser = (code, filename)->
+indentParser = (code, filename)->
   exports.parser(code, filename, 'indent')
 
 # 大括号解析
-exports.braceParser = (code, filename)->
+braceParser = (code, filename)->
   exports.parser(code, filename, 'brace')
 
 # 判断解析的语法类型
@@ -137,7 +136,6 @@ _appendJade = (xs, state, code, style)->
 
       when '&attr'
         # jade 写入 father
-        log xsText
         strObj = _.str.clean(xsText).split(' ')
         strObj[0] = xsText.split(strObj[0])[0] + strObj[0] + '('+text+')'
         xsReverse[fatherIndex].text = _.reduce strObj, (memo, num)->
@@ -167,7 +165,6 @@ _indentParser = (xs, state, code, style)->
     _appendSass args...
   else
     _elseParser args...
-  # [xs, state, code[1..], style]
 
 _braceParser = (xs, state, code, style)->
   style = 'brace'
@@ -191,12 +188,8 @@ parse = (xs, state, code, style)->
         _braceParser args...
       return
 
-###
-如果是attr
-查找前对象 type 为非sass col 小余 本行的第一个对象，在找到的前对象的文本后空格或者结束符前面加入（attr后面的内容，并给等号后面,逗号前面和行尾加引号），并且此行不生成的对象。
-
-如果是text
-查找前对象 type为非sass col 小余 本行的第一个对象，在找到的前对象的文本后面加入（text后面的内容）,并且保持插入内容前有空格，并且此行不生成的对象。
-
-foreach 对象，写入sass和jade文件
-###
+module.exports = {
+  parser: parser,
+  indentParser: indentParser,
+  braceParser: braceParser
+}
