@@ -8,8 +8,13 @@
     "gulp-sass": "~2.0.4",
     "gulp-jade": "~1.1.0",
 
-    "iconv-lite": "~0.4.11",
-    "cirru-parser": "^0.10.6"
+    "jade": "~1.11.0",
+    "node-sass": "~3.3.2",
+
+    "step": "~0.0.6",
+    "async": "~1.4.2",
+    "object-assign": "~4.0.1",
+    "iconv-lite": "~0.4.11"
   },
   "dependencies": {
     "underscore": "^1.8.3",
