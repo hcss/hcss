@@ -1,8 +1,7 @@
+$ = require './hassTool.coffee'
+
 _ = require 'underscore'
 _.str = require 'underscore.string'
-
-log = (a)->
-  console.log a
 
 parser = (code, filename, style)->
   style = style || 'indent'
@@ -75,10 +74,10 @@ _preSpaceCount = (str)->
 
 # 解析完
 _indentEnd = (xs, state, code, style)->
-  log "End in indent parse ..."
+  $.log "End in indent parse ..."
 
 _braceEnd = (xs, state, code, style)->
-  log "End in brace parse ..."
+  $.log "End in brace parse ..."
 
 # 跳过不能解析的行
 _elseParser = (xs, state, code, style)->
@@ -93,7 +92,6 @@ _appendState = (xs, state, code, style, str)->
   sta.$text = state.$text
   sta.$attr = state.$attr
   sta.col = _preSpaceCount(str)
-  sta.path = state.path
   if xs.push sta
     [xs, state, code[1..], style]
 

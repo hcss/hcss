@@ -1,8 +1,5 @@
 jade = require 'jade'
 
-log = (a)->
-  console.log a
-
 parser = (str, locals)->
   locals = {}
   options = {

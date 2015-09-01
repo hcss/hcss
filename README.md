@@ -20,4 +20,4 @@ Hyper Cascading Stylesheet
 
 ## Run
 
-`coffee bin/hcss.coffee`
+`coffee bin/index.coffee`

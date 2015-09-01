@@ -1,12 +1,9 @@
 {
   "name": "hcss",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "devDependencies": {
     "gulp": "~3.9.0",
     "path": "~0.11.14",
-
-    "gulp-sass": "~2.0.4",
-    "gulp-jade": "~1.1.0",
 
     "jade": "~1.11.0",
     "node-sass": "~3.3.2",
@@ -14,7 +11,13 @@
     "step": "~0.0.6",
     "async": "~1.4.2",
     "object-assign": "~4.0.1",
-    "iconv-lite": "~0.4.11"
+    "iconv-lite": "~0.4.11",
+
+    "gulp-sass": "~2.0.4",
+    "gulp-jade": "~1.1.0"
+  },
+  "bin": {
+    "bin": "bin/index.coffee"
   },
   "dependencies": {
     "underscore": "^1.8.3",
