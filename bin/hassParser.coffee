@@ -12,6 +12,8 @@ parser = (code, filename, style)->
     col: 0, # 前面有几个(空格)
     # level: 1, # 嵌套
     text: '', # 一行的文本(解析后的)
+    $text: '',
+    $attr: '',
     path: filename # 读取的文件
   xs = []
   ###
@@ -88,6 +90,8 @@ _appendState = (xs, state, code, style, str)->
   sta.type = state.type
   sta.row = state.row += 1
   sta.text = str
+  sta.$text = state.$text
+  sta.$attr = state.$attr
   sta.col = _preSpaceCount(str)
   sta.path = state.path
   if xs.push sta
@@ -131,16 +135,18 @@ _appendJade = (xs, state, code, style)->
     switch _.str.clean(textStr)
       when '&text'
         # jade 写入 father
-        xsReverse[fatherIndex].text = xsText + ' ' + text
+        # xsReverse[fatherIndex].text = xsText + ' ' + text
+        xsReverse[fatherIndex].$text = text
         [_reverse(xsReverse), state, code[1..], style, text]
 
       when '&attr'
         # jade 写入 father
-        strObj = _.str.clean(xsText).split(' ')
-        strObj[0] = xsText.split(strObj[0])[0] + strObj[0] + '('+text+')'
-        xsReverse[fatherIndex].text = _.reduce strObj, (memo, num)->
-          return memo + ' ' + num
-        [_reverse(xsReverse), state, code, style, text]
+        # strObj = _.str.clean(xsText).split(' ')
+        # strObj[0] = xsText.split(strObj[0])[0] + strObj[0] + '('+text+')'
+        # xsReverse[fatherIndex].text = _.reduce strObj, (memo, num)->
+        #   return memo + ' ' + num
+        xsReverse[fatherIndex].$attr = text
+        [_reverse(xsReverse), state, code[1..], style, text]
 
   else switch str
     when '&extends' then char = char.replace('&', '')
@@ -188,8 +194,7 @@ parse = (xs, state, code, style)->
         _braceParser args...
       return
 
-module.exports = {
+module.exports =
   parser: parser,
   indentParser: indentParser,
   braceParser: braceParser
-}
