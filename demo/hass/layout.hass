@@ -1,4 +1,7 @@
+doctype xml
+
 html
+  font-size: 10px
   head
     &block head
     link
@@ -6,9 +9,6 @@ html
     &block body
     &text: 嘎嘎
     &attr: href='#', type='text/css'
-
-!html
-  font-size: 10px
 
 !*
   margin: 0

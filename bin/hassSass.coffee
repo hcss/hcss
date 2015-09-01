@@ -7,6 +7,7 @@ log = (a)->
 
 
 parser = (str)->
+
   options = {
     errLogToConsole: true,
     outputStyle: 'nested', #compressed

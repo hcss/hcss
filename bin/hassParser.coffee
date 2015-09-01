@@ -108,9 +108,9 @@ _appendSass = (xs, state, code, style)->
   _appendState(xs, state, code, style, char)
 
 _appendJade = (xs, state, code, style)->
-  state.type = 'jade'
   char = code[0]
   # 兼容 &text : 嘎嘎:
+  state.type = 'jade'
   str = _.str.clean(char).split(' ')[0]
   if _.str.include(char, ':')
     # bug: text 和 attr 依旧在 xs 中，先用 state.type 忽略
@@ -147,12 +147,12 @@ _appendJade = (xs, state, code, style)->
         [_reverse(xsReverse), state, code[1..], style, text]
 
   else switch str
-    when '&extends' then char = char.replace('&', '')
-    when '&block' then  char = char.replace('&', '')
-    when '&include' then  char = char.replace('&', '')
+    when '&extends' then text = char.replace('&', '')
+    when '&block' then  text = char.replace('&', '')
+    when '&include' then  text = char.replace('&', '')
 
     else  throw error
-  _appendState(xs, state, code, style, char)
+  _appendState(xs, state, code, style, text)
 
 
 

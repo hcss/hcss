@@ -27,14 +27,20 @@ _parseObj2Str = (obj)->
       switch val.type
         when 'hass'
           if val.text
-            jadeText = val.text + '(' + val.$attr + ')' + ' ' + val.$text + '\n'
+            jadeText = val.text
+            if val.$attr
+              jadeText += '(' + val.$attr + ')'
+            if val.$text
+              jadeText += ' ' + val.$text
+            jadeText += '\n'
             parsedText.jade += jadeText
             parsedText.sass += val.text + '\n'
         when 'jade'
           parsedText.jade += val.text + '\n'
         when 'sass'
           parsedText.sass += val.text + '\n'
-    parsedText.jade = 'doctype html\n' + parsedText.jade
+    # 主页面
+    # parsedText.jade = 'doctype html\n' + parsedText.jade
   parsedText
 
 _parseFile2Str = (hass_file)->
@@ -63,22 +69,21 @@ compile = (options, callback)->
       options.style = 'indent'
     when 'hcss'
       options.style = 'brace'
-  #
+  # coding here...
 
 
 
 
 render2SassAndJade = (hass_file, sass_file, jade_file) ->
-  # _deleteFile([sass_file, jade_file])
   parsedStr = _parseFile2Str(hass_file)
-  $.writeFile(sass_file, parsedStr.sass, 'sass')
-  $.writeFile(jade_file, parsedStr.jade, 'jade')
+  $.writeFile(sass_file, parsedStr.sass, 'sass') if parsedStr.sass
+  $.writeFile(jade_file, parsedStr.jade, 'jade') if parsedStr.jade
 
 render2CssAndHtml = (hass_file, css_file, html_file) ->
   # _deleteFile([sass_file, jade_file])
   parsedStr = _parseFile2Str(hass_file)
-  _writeCss(css_file, parsedStr.sass, 'css')
-  _writeHtml(html_file, parsedStr.jade, 'html')
+  _writeCss(css_file, parsedStr.sass, 'css') if parsedStr.sass
+  _writeHtml(html_file, parsedStr.jade, 'html') if parsedStr.jade
 
 module.exports =
   render2SassAndJade: render2SassAndJade,

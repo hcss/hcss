@@ -6,8 +6,8 @@ header.header#header
   a.log
     text-decoration: none
 
-    &text: "hcss 规则"
-    &attr: "href=www.baidu.com", "attr=链接"
+    &text: hcss 规则
+    &attr: href='www.baidu.com', attr='链接'
 
     img
-      &attr: "src=#"
+      &attr: src='#'
